@@ -8,5 +8,7 @@ OR
 go run -mod=mod main.go
 
 ## Tool 
-- HTTP
-- GIN
+- github.com/gin-gonic/gin
+- go.uber.org/zap
+- go.uber.org/zap/zapcore
+
