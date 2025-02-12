@@ -1,0 +1,2 @@
+{"level":"\u001b[34mINFO\u001b[0m","timestamp":"2025-02-12T16:00:22.233+0800","caller":"GoGinService/main.go:26","message":"Hello Gin with Zap"}
+{"level":"\u001b[34mINFO\u001b[0m","timestamp":"2025-02-12T16:00:22.255+0800","caller":"middleware/middleware.go:22","message":"HTTP Request","method":"GET","path":"/","status":200,"client_ip":"::1","latency":22211200,"user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"}
