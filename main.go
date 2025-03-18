@@ -14,8 +14,19 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+
+	// swagger 套件引入
+	_ "GoGinService/docs" // 引入 docs 產生的 swagger 文件
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @title GoGinService API
+// @version 1.0
+// @description 這是 GoGinService 的 Swagger API 文件範例。
+// @host localhost:8080
+// @BasePath /
 func main() {
 	fmt.Println("Hello, world GO GIN Sevice!")
 	// 初始化 zap logger
@@ -29,10 +40,21 @@ func main() {
 	r.Use(middleware.GinZapLoggerMiddleware(log))
 
 	// 測試 API
+	// GetHello godoc
+	// @Summary 打招呼的API
+	// @Description 回傳 Hello world 訊息
+	// @Tags example
+	// @Accept json
+	// @Produce json
+	// @Success 200 {object} map[string]string "成功回應"
+	// @Router / [get]
 	r.GET("/", func(c *gin.Context) {
 		log.Info("Hello Gin with Zap")
 		c.JSON(200, gin.H{"message": "Hello, world!"})
 	})
+
+	// Swagger API 文件路由
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// // 啟動伺服器
 	// port := ":8080"

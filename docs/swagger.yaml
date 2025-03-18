@@ -1,0 +1,9 @@
+basePath: /
+host: localhost:8080
+info:
+  contact: {}
+  description: 這是 GoGinService 的 Swagger API 文件範例。
+  title: GoGinService API
+  version: "1.0"
+paths: {}
+swagger: "2.0"
