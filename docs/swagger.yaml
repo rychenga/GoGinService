@@ -5,5 +5,22 @@ info:
   description: 這是 GoGinService 的 Swagger API 文件範例。
   title: GoGinService API
   version: "1.0"
-paths: {}
+paths:
+  /ping:
+    get:
+      consumes:
+      - application/json
+      description: 回傳 Hello world 訊息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功回應
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: 打招呼的API
+      tags:
+      - example
 swagger: "2.0"

@@ -22,6 +22,27 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// var log *zap.Logger
+
+// PingHandler godoc
+// @Summary 打招呼的API
+// @Description 回傳 Hello world 訊息
+// @Tags example
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]string "成功回應"
+// @Router /ping [get]
+func PingHandler(c *gin.Context) {
+	log, exists := c.Get("logger")
+	if !exists {
+		panic("Logger 未設定")
+	}
+	logger := log.(*zap.Logger)
+
+	logger.Info("Hello Gin with Zap")
+	c.JSON(200, gin.H{"message": "Hello, world!"})
+}
+
 // @title GoGinService API
 // @version 1.0
 // @description 這是 GoGinService 的 Swagger API 文件範例。
@@ -39,19 +60,26 @@ func main() {
 	// 使用 gin-zap 記錄 middleware
 	r.Use(middleware.GinZapLoggerMiddleware(log))
 
-	// 測試 API
-	// GetHello godoc
-	// @Summary 打招呼的API
-	// @Description 回傳 Hello world 訊息
-	// @Tags example
-	// @Accept json
-	// @Produce json
-	// @Success 200 {object} map[string]string "成功回應"
-	// @Router / [get]
-	r.GET("/", func(c *gin.Context) {
-		log.Info("Hello Gin with Zap")
-		c.JSON(200, gin.H{"message": "Hello, world!"})
+	// // 測試 API
+	// // GetHello godoc
+	// // @Summary 打招呼的API
+	// // @Description 回傳 Hello world 訊息
+	// // @Tags example
+	// // @Accept json
+	// // @Produce json
+	// // @Success 200 {object} map[string]string "成功回應"
+	// // @Router / [get]
+	// r.GET("/", func(c *gin.Context) {
+	// 	log.Info("Hello Gin with Zap")
+	// 	c.JSON(200, gin.H{"message": "Hello, world!"})
+	// })
+
+	// 將 logger 注入到 gin context 中
+	r.Use(func(c *gin.Context) {
+		c.Set("logger", log)
+		c.Next()
 	})
+	r.GET("/ping", PingHandler)
 
 	// Swagger API 文件路由
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
