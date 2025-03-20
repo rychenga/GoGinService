@@ -6,6 +6,23 @@ info:
   title: GoGinService API
   version: "1.0"
 paths:
+  /dig:
+    get:
+      consumes:
+      - application/json
+      description: 回傳 Hello Dig 訊息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功回應
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: 打招呼Dig的API
+      tags:
+      - example
   /ping:
     get:
       consumes:

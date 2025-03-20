@@ -13,6 +13,7 @@ import (
 	"GoGinService/middleware" // 匯入 middleware
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/dig"
 	"go.uber.org/zap"
 
 	// swagger 套件引入
@@ -43,6 +44,25 @@ func PingHandler(c *gin.Context) {
 	c.JSON(200, gin.H{"message": "Hello, world!"})
 }
 
+// DingHandler godoc
+// @Summary 打招呼Dig的API
+// @Description 回傳 Hello Dig 訊息
+// @Tags example
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]string "成功回應"
+// @Router /dig [get]
+func DingHandler(c *gin.Context) {
+	log, exists := c.Get("logger")
+	if !exists {
+		panic("Logger 未設定")
+	}
+	logger := log.(*zap.Logger)
+
+	logger.Info("Hello Dig with Zap")
+	c.JSON(200, gin.H{"message": "Hello, Dig!"})
+}
+
 // @title GoGinService API
 // @version 1.0
 // @description 這是 GoGinService 的 Swagger API 文件範例。
@@ -53,6 +73,13 @@ func main() {
 	// 初始化 zap logger
 	log := logger.InitLogger()
 	defer log.Sync() // 確保 log buffer 被寫入
+
+	// 使用 dig 進行依賴注入
+	container := dig.New()
+	if err := container.Provide(logger.InitLogger); err != nil {
+		fmt.Println("Failed to provide logger:", err)
+		return
+	}
 
 	// 設定 Gin 伺服器
 	r := gin.New()
@@ -80,6 +107,13 @@ func main() {
 		c.Next()
 	})
 	r.GET("/ping", PingHandler)
+
+	// dig 依賴注入「/dig」
+	if err := container.Invoke(func(log *zap.Logger) {
+		r.GET("/dig", DingHandler)
+	}); err != nil {
+		log.Fatal("Failed to invoke DingHandler:", zap.Error(err))
+	}
 
 	// Swagger API 文件路由
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
