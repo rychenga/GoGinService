@@ -27,5 +27,8 @@ func GinZapLoggerMiddleware(logger *zap.Logger) gin.HandlerFunc {
 			zap.Duration("latency", latency),
 			zap.String("user_agent", c.Request.UserAgent()),
 		)
+
+		// 確保log在中間件結束時刷新和關閉
+		defer logger.Sync()
 	}
 }
